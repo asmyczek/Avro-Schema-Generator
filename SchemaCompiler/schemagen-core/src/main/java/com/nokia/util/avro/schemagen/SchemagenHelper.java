@@ -28,6 +28,7 @@ import com.sun.xml.xsom.*;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigInteger;
+import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -230,7 +231,7 @@ public class SchemagenHelper {
 			} else if (type instanceof CElementInfo) {
 				CElementInfo elemInfo = (CElementInfo) type;
 
-				if ("javax.xml.bind.JAXBElement<java.lang.Object>".equals(elemInfo.fullName())) {
+				if (elemInfo.fullName().startsWith("javax.xml.bind.JAXBElement")) {
 					String pName = makePackageName(_package);
 					returnType = new ReferenceAvroType(pName);
 					specialSchemas.get(ReferenceAvroType.class).add(pName);
@@ -269,6 +270,10 @@ public class SchemagenHelper {
 		}
 
 		if (clazz.isAssignableFrom(clazz.owner().ref(BigInteger.class))) {
+			return AvroPrimitive.PrimitiveType.STRING.newInstance();
+		}
+
+		if (clazz.isAssignableFrom(clazz.owner().ref(BigDecimal.class))) {
 			return AvroPrimitive.PrimitiveType.STRING.newInstance();
 		}
 
